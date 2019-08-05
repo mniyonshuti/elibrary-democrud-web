@@ -6,10 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.validation.Valid;
@@ -23,7 +20,7 @@ public class BookController {
     @GetMapping(value = {"/elibrary/book/list"})
     public ModelAndView listBooks() {
         ModelAndView modelAndView = new ModelAndView();
-        modelAndView.addObject("books", bookService.getAllBooks());
+        modelAndView.addObject("books", bookService.getAllSortedBooks(""));
         modelAndView.setViewName("book/list");
         return modelAndView;
     }
@@ -41,8 +38,11 @@ public class BookController {
             model.addAttribute("errors", bindingResult.getAllErrors());
             return "book/new";
         }
-        book = bookService.saveBook(book);
-        return "redirect:/elibrary/book/list";
+        else{
+            book = bookService.saveBook(book);
+            return "redirect: /elibrary/book/list";
+        }
+
     }
 
     @GetMapping(value = {"/elibrary/book/edit/{bookId}"})
@@ -72,4 +72,11 @@ public class BookController {
         return "redirect:/elibrary/book/list";
     }
 
+    @GetMapping(value = {"/elibrary/book/search"})
+    public ModelAndView searchBooks(@RequestParam("searchBook") String searchBook) {
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.addObject("books", bookService.searchBookBy(searchBook));
+        modelAndView.setViewName("book/search");
+        return modelAndView;
+    }
 }

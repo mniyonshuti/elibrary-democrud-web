@@ -6,6 +6,7 @@ import edu.mum.cs.cs425.demos.elibrarydemocrudweb.service.BookService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -36,6 +37,16 @@ public class BookServiceImpl implements BookService {
     @Override
     public void deleteBookById(Integer bookId) {
         repository.deleteById(bookId);
+    }
+
+    @Override
+    public Iterable<Book> searchBookBy(String name) {
+        return repository.findBookByPublisherContainsOrIsbnContainsOrTitleContainsOrderByTitle(name, name, name);
+    }
+
+    @Override
+    public Iterable<Book> getAllSortedBooks(String s) {
+        return repository.findBookByTitleContainsOrderByTitle("");
     }
 
 }
